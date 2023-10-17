@@ -1,29 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
-import Home from './components/Home';
-import JobDetail from './components/JobDetail';
-import './styles/App.css';
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import LoginPage from "./components/LoginPage";
+import Home from "./components/Home";
+import JobDetail from "./components/JobDetail";
+import "./styles/App.css";
+import LogviewPage from "./components/LogviewPage";
 
-  
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const storedLoggedInStatus = localStorage.getItem('isLoggedIn');
-    if (storedLoggedInStatus === 'true') {
+    const storedLoggedInStatus = localStorage.getItem("isLoggedIn");
+    if (storedLoggedInStatus === "true") {
       setIsLoggedIn(true);
     }
   }, []);
 
   const handleLogin = (loggedIn) => {
     setIsLoggedIn(loggedIn);
-    localStorage.setItem('isLoggedIn', loggedIn.toString());
+    localStorage.setItem("isLoggedIn", loggedIn.toString());
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem("isLoggedIn");
   };
 
   return (
@@ -39,11 +44,15 @@ function App() {
           <Routes>
             <Route path="/home" element={<Home isLoggedIn={isLoggedIn} />} />
             <Route path="*" element={<Navigate to="/home" />} />
+            <Route path="/api/logviewpage" element={<LogviewPage/>} />
             <Route path="/job/:id" element={<JobDetail />} />
           </Routes>
         ) : (
           <Routes>
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route
+              path="/login"
+              element={<LoginPage onLogin={handleLogin} />}
+            />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         )}
