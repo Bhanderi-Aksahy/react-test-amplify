@@ -16,23 +16,28 @@ function Home({ isLoggedIn }) {
     processType: "",
     status: "",
     propertyCode: "",
-    startDate: "",
-    endDate: "",
+    startDate:  moment().startOf("month").format("YYYY-MM-DD"),
+    endDate: moment().endOf("month").format("YYYY-MM-DD"),
   });
 
+  const [initialLoad, setInitialLoad] = useState(true);
+
+
   useEffect(() => {
-    setLoading(false);
-    let date = new Date();
-    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  
+    if (!initialLoad) {
+      fetchData(filters.startDate, filters.endDate);
+    }
+  }, [filters.startDate, filters.endDate, initialLoad]);
+
+  useEffect(() => {
+    if (initialLoad) {
+      setInitialLoad(false);
+    }
+  }, [initialLoad]);
+
+  const fetchData = (startDate, endDate) => {
     setLoading(true);
-    fetchRMSJobList(
-      filters?.startDate
-        ? filters?.startDate
-        : moment(firstDay).format("YYYY-MM-DD"),
-      filters.endDate ? filters.endDate : moment(lastDay).format("YYYY-MM-DD")
-    )
+    fetchRMSJobList(startDate, endDate)
       .then((data) => {
         setTableData(data.data);
         setLoading(false);
@@ -41,7 +46,30 @@ function Home({ isLoggedIn }) {
         console.error("Error:", error);
         setLoading(false);
       });
-  }, [filters.startDate, filters.endDate]);
+  };
+
+  // useEffect(() => {
+  //   setLoading(false);
+  //   let date = new Date();
+  //   let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  //   let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  
+  //   setLoading(true);
+  //   fetchRMSJobList(
+  //     filters?.startDate
+  //       ? filters?.startDate
+  //       : moment(firstDay).format("YYYY-MM-DD"),
+  //     filters.endDate ? filters.endDate : moment(lastDay).format("YYYY-MM-DD")
+  //   )
+  //     .then((data) => {
+  //       setTableData(data.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //       setLoading(false);
+  //     });
+  // }, [filters.startDate, filters.endDate]);
   
 
   const handleFilterChange = (e) => {
